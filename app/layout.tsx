@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
@@ -28,6 +29,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
             forcedTheme="dark"
             storageKey="twitch-theme"
           >
+            <Toaster position="bottom-center" />
             {children}
           </ThemeProvider>
         </body>
