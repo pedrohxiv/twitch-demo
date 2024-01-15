@@ -11,9 +11,10 @@ import { useMediaQuery } from "usehooks-ts";
 
 import { ChatVariant, useChatSidebar } from "@/store/use-chat-sidebar";
 
-import { ChatForm } from "./chat-form";
-import { ChatHeader } from "./chat-header";
-import { ChatList } from "./chat-list";
+import { ChatCommunity } from "./chat-community";
+import { ChatForm, ChatFormSkeleton } from "./chat-form";
+import { ChatHeader, ChatHeaderSkeleton } from "./chat-header";
+import { ChatList, ChatListSkeleton } from "./chat-list";
 
 interface ChatProps {
   viewerName: string;
@@ -89,9 +90,23 @@ export const Chat = ({
       )}
       {variant === ChatVariant.COMMUNITY && (
         <>
-          <p>Community mode</p>
+          <ChatCommunity
+            viewerName={viewerName}
+            hostName={hostName}
+            isHidden={isHidden}
+          />
         </>
       )}
+    </div>
+  );
+};
+
+export const ChatSkeleton = () => {
+  return (
+    <div className="flex flex-col border-l border-b pt-0 h-[calc(100vh-80px)] border-2">
+      <ChatHeaderSkeleton />
+      <ChatListSkeleton />
+      <ChatFormSkeleton />
     </div>
   );
 };
