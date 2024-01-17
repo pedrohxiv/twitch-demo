@@ -1,23 +1,33 @@
 "use server";
 
+import { RoomServiceClient } from "livekit-server-sdk";
 import { revalidatePath } from "next/cache";
 
+import { getSelf } from "@/lib/service/auth-service";
 import { blockUser, unblockUser } from "@/lib/service/block-service";
 
+const roomService = new RoomServiceClient(
+  process.env.LIVEKIT_API_URL!,
+  process.env.LIVEKIT_API_KEY!,
+  process.env.LIVEKIT_API_SECRET!
+);
+
 export const onBlock = async (id: string) => {
+  const self = await getSelf();
+
+  let blockedUser;
+
   try {
-    const blockedUser = await blockUser(id);
+    blockedUser = await blockUser(id);
+  } catch (error) {}
 
-    revalidatePath("/");
+  try {
+    await roomService.removeParticipant(self.id, id);
+  } catch (error) {}
 
-    if (blockedUser) {
-      revalidatePath(`/${blockedUser.blocked.username}`);
-    }
+  revalidatePath(`/u/${self.username}/community`);
 
-    return blockedUser;
-  } catch (error) {
-    throw new Error("Internal Error");
-  }
+  return blockedUser;
 };
 
 export const onUnblock = async (id: string) => {
